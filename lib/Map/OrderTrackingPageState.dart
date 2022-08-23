@@ -34,7 +34,6 @@ class _OrderTrackingPageStateState extends State<OrderTrackingPageState> {
   BitmapDescriptor sourceIcon=BitmapDescriptor.defaultMarker;
   BitmapDescriptor destinationIcon=BitmapDescriptor.defaultMarker;
   BitmapDescriptor currentIcon=BitmapDescriptor.defaultMarker;
-
   void setCustomMarker(){
     BitmapDescriptor.fromAssetImage(ImageConfiguration.empty,"assets/icons/rider.png")
         .then((icon) {

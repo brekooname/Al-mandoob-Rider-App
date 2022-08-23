@@ -40,6 +40,8 @@ dependencies:
   location:
   flutter_svg:
   flutter_polyline_points:
+  firebase_core: ^1.21.0
+  cloud_firestore: ^3.4.5
 
 
 dev_dependencies:

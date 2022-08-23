@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:al_mandoob_rider/Map/OrderTrackingPageState.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:location/location.dart';
 
 import '../Controller/HomeConroller.dart';
 
@@ -22,7 +26,20 @@ HomeController homeController=Get.put(HomeController());
 
 class MyHomePage extends StatelessWidget {
   var htextTheme=TextStyle(color: Color(0xffffffff),fontWeight: FontWeight.bold,fontSize: 18.sp);
+  // Create a CollectionReference called users that references the firestore collection
+  CollectionReference users = FirebaseFirestore.instance.collection('RidersLocation');
+  StreamSubscription<LocationData>? locationSubscription;
 
+  //users.
+  Future<void> addUser(id,lat,lng) {
+    // Call the user's CollectionReference to add a new user
+    return users.doc("4UgfUKRPybm9es4MFMyb").set({
+      'rider_id': id, // John Doe
+      'latitude': lat, // Stokes and Sons
+      'longitude': lng // 42
+    }).then((value) => print("Location Added "))
+        .catchError((error) => print("Failed to add user: $error"));
+  }
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context, designSize: const Size(360, 690));
@@ -72,6 +89,15 @@ class MyHomePage extends StatelessWidget {
                                           onChanged: (b)
                                           {
                                             homeController.changeOnlineStatus();
+                                            if(b==true)
+                                            {
+                                              getCurrentLocation();
+                                            }
+                                            else
+                                            {
+                                              locationSubscription!.resume();
+
+                                            }
                                             print("sl;ksl; ${ homeController.onlineStatus.value}");
 
                                           }))
@@ -232,18 +258,6 @@ class MyHomePage extends StatelessWidget {
     );
   }
 
-   _listview(int count) {
-    List<Widget> listItems =[];
-
-
-
-    for (int i = 0; i < count; i++) {
-      listItems.add(new
-      Padding(padding: new EdgeInsets.all(20.0), child: new Text('Item ${i.toString()}', style: new TextStyle(fontSize: 25.0))));
-    }
-
-    return listItems;
-  }
 
   showCard(int i) {
     if(i==0)
@@ -288,6 +302,31 @@ class MyHomePage extends StatelessWidget {
             ,fontWeight: FontWeight.bold,fontSize: 18.sp),)
       ],);
   }
+  void getCurrentLocation() async{
+    Location location=Location();
+    location.getLocation().then((location) {
+
+
+    });
+
+    locationSubscription= location.onLocationChanged.listen((newLoc) {
+      addUser(22,newLoc.latitude,newLoc.longitude);
+
+      // currentLocation=newLoc;
+      //
+      // googleMapController.animateCamera(CameraUpdate.newCameraPosition(
+      //     CameraPosition(
+      //         target:  LatLng(newLoc.latitude!,newLoc.longitude!),
+      //         zoom: 16
+      //     ))
+      // );
+
+      // setState((){});
+    });
+
+
+}
+
 
 }
 
